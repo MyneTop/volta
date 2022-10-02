@@ -1,0 +1,66 @@
+name: build trigger
+
+on:
+  schedule:
+    - cron: '3 2 * * *'
+  push:
+    branches:
+      - master
+
+jobs:
+  checkout:
+    runs-on: [self-hosted, ARM64]
+    steps:
+    - name: checkout builder
+      id: builder
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - name: install tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install jq
+    - name: add exec permission
+      run: |
+        chmod -R +x ./runner
+    - name: check upstream version
+      id: check-upstream
+      run: |
+        ./runner/check-upstream.sh
+    - name: check current version
+      id: check-current
+      run: |
+        ./runner/check-current.sh
+    - name: check version
+      if: steps.check-upstream.outputs.version == steps.check-current.outputs.version
+      run: exit 0
+    - name: get upstream source
+      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+      run: |
+        ./runner/get-source.sh
+    - name: rust build
+      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+      # user rust toolchain with arm64
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        target: aarch64-unknown-linux-gnu
+        # profile: minimal
+        # override: true
+      uses: actions-rs/cargo@v1
+      working-directory: ./volta
+      with:
+        command: build
+        args: --release --target aarch64-unknown-linux-gnu
+    - name: package
+      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+      working-directory: ./volta
+      run: |
+        ./runner/package.sh
+    - name: release to github
+      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+      uses: softprops/action-gh-release@v1
+      working-directory: ./volta
+      with:
+        files: |
+          ./volta-*.tar.gz
