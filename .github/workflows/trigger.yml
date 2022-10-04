@@ -35,12 +35,10 @@ jobs:
       if: steps.check-upstream.outputs.version == steps.check-current.outputs.version
       run: exit 0
     - name: get upstream source
-      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
       run: |
         ./runner/get-source.sh
       # user rust toolchain with arm64
     - name: rust toolchain
-      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
       working-directory: ./volta
       uses: actions-rs/toolchain@v1
       with:
@@ -49,19 +47,16 @@ jobs:
         # profile: minimal
         # override: true
     - name: rust build
-      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
       working-directory: ./volta
       uses: actions-rs/cargo@v1
       with:
         command: build
         args: --release --target aarch64-unknown-linux-gnu
     - name: package
-      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
       working-directory: ./volta
       run: |
         ../runner/package.sh
     - name: release to github
-      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
       working-directory: ./volta
       uses: softprops/action-gh-release@v1
       with:
