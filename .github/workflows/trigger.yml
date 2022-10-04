@@ -43,13 +43,12 @@ jobs:
       working-directory: ./volta
       # user rust toolchain with arm64
       uses: actions-rs/toolchain@v1
+      uses: actions-rs/cargo@v1
       with:
         toolchain: stable
         target: aarch64-unknown-linux-gnu
         # profile: minimal
         # override: true
-      uses: actions-rs/cargo@v1
-      with:
         command: build
         args: --release --target aarch64-unknown-linux-gnu
     - name: package
