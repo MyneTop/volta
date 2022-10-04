@@ -20,7 +20,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install jq
-        sudo apt-get install cc
         sudo apt-get install build-essential
     - name: add exec permission
       run: |
