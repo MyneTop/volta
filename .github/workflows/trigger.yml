@@ -67,5 +67,6 @@ jobs:
       if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
       uses: softprops/action-gh-release@v1
       with:
+        tag_name: v${{ steps.check-upstream.outputs.version }}
         files: |
           ./volta/volta-*.tar.gz
