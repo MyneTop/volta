@@ -59,6 +59,8 @@ jobs:
         args: --release --target aarch64-unknown-linux-gnu --manifest-path volta/Cargo.toml
     - name: package
       if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+      env: 
+        VERSION: ${{ steps.check-upstream.outputs.version }}
       run: |
         ./runner/package.sh
     - name: release to github
