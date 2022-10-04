@@ -16,12 +16,12 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: '0'
-    # - name: install tools
-    #   run: |
-    #     sudo apt-get update
-    #     sudo apt-get install jq
-    #     sudo apt-get install build-essential
-    #     sudo apt-get install libssl-dev
+    - name: install tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install jq
+        sudo apt-get install build-essential
+        sudo apt-get install pkg-config libssl-dev
     - name: add exec permission
       run: |
         chmod -R +x ./runner
@@ -54,8 +54,6 @@ jobs:
       if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
       # run: /home/runner/.cargo/bin/cargo build --release --target aarch64-unknown-linux-gnu --manifest-path volta/Cargo.toml
       uses: actions-rs/cargo@v1
-      env:
-        OPENSSL_DIR: "/usr/lib/ssl"
       with:
         command: build
         args: --release --target aarch64-unknown-linux-gnu --manifest-path volta/Cargo.toml
