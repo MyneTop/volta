@@ -51,10 +51,11 @@ jobs:
         # override: true
     - name: rust build
       if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
-      uses: actions-rs/cargo@v1
-      with:
-        command: build
-        args: --release --target aarch64-unknown-linux-gnu --manifest-path volta/Cargo.toml
+      run: /home/runner/.cargo/bin/cargo build --release --target aarch64-unknown-linux-gnu --manifest-path volta/Cargo.toml
+      # uses: actions-rs/cargo@v1
+      # with:
+      #   command: build
+      #   args: --release --target aarch64-unknown-linux-gnu --manifest-path volta/Cargo.toml
     - name: package
       if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
       run: |
