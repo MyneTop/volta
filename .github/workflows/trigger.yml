@@ -75,4 +75,4 @@ jobs:
       with:
         tag_name: v${{ steps.check-upstream.outputs.version }}
         files: |
-          ./volta/volta-*.tar.gz
+          ./volta-*.tar.gz
