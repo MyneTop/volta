@@ -45,7 +45,6 @@ jobs:
         target: aarch64-unknown-linux-gnu
         # profile: minimal
         # override: true
-      working-directory: ./volta
     - name: rust build
       uses: actions-rs/cargo@v1
       with:
@@ -53,7 +52,6 @@ jobs:
         args: --release --target aarch64-unknown-linux-gnu
       working-directory: ./volta
     - name: package
-      working-directory: ./volta
       run: |
         ../runner/package.sh
     - name: release to github
