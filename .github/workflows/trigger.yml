@@ -49,8 +49,7 @@ jobs:
       uses: actions-rs/cargo@v1
       with:
         command: build
-        args: --release --target aarch64-unknown-linux-gnu
-        working-directory: ./volta
+        args: --release --target aarch64-unknown-linux-gnu --manifest-path volta/Cargo.toml
     - name: package
       run: |
         ./runner/package.sh
