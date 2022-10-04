@@ -1,0 +1,78 @@
+name: build trigger
+
+on:
+  schedule:
+    - cron: '3 2 * * SUN'
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: [self-hosted, ARM64]
+    steps:
+    - name: checkout builder
+      id: builder
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - name: install tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install jq
+    - name: add exec permission
+      run: |
+        chmod -R +x ./runner
+    - name: check upstream version
+      id: check-upstream
+      run: |
+        ./runner/check-upstream.sh
+    - name: check current version
+      id: check-current
+      run: |
+        EXT_VERSION=$(curl -u ${{ secrets.CR_USER }}:${{ secrets.CR_PAT }} -sX GET https://api.github.com/repos/MyneTop/volta/releases/latest | jq -r '. | .tag_name' | sed 's|^v||')
+        echo "upstream version: $EXT_VERSION"
+        echo "::set-output name=version::$EXT_VERSION"
+        # ./runner/check-current.sh
+    - name: check version
+      if: steps.check-upstream.outputs.version == steps.check-current.outputs.version
+      run: exit 0
+    - name: install build tools
+      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+      run: |
+        sudo apt-get install build-essential
+        sudo apt-get install pkg-config libssl-dev
+    - name: get upstream source
+      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+      run: |
+        ./runner/get-source.sh
+      # user rust toolchain with arm64
+    - name: rust toolchain
+      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+      # run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        target: aarch64-unknown-linux-gnu
+        profile: minimal
+        override: true
+    - name: rust build
+      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+      # run: /home/runner/.cargo/bin/cargo build --release --target aarch64-unknown-linux-gnu --manifest-path volta/Cargo.toml
+      uses: actions-rs/cargo@v1
+      with:
+        command: build
+        args: --release --target aarch64-unknown-linux-gnu --manifest-path volta/Cargo.toml
+    - name: package
+      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+      env: 
+        VERSION: ${{ steps.check-upstream.outputs.version }}
+      run: |
+        ./runner/package.sh
+    - name: release to github
+      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ steps.check-upstream.outputs.version }}
+        files: |
+          ./volta/volta-*.tar.gz
