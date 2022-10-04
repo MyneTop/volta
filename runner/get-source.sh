@@ -4,5 +4,5 @@ curl -JL "https://github.com/volta-cli/volta/archive/refs/tags/v$EXT_RELEASE.tar
 
 # extract source code
 tar -xzf volta.tar.gz
-mv volta-$EXT_RELEASE volta
+mv volta-$EXT_RELEASE/ volta
 ls -l volta
