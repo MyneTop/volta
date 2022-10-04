@@ -40,6 +40,7 @@ jobs:
         ./runner/get-source.sh
     - name: rust build
       if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+      working-directory: ./volta
       # user rust toolchain with arm64
       uses: actions-rs/toolchain@v1
       with:
@@ -48,7 +49,6 @@ jobs:
         # profile: minimal
         # override: true
       uses: actions-rs/cargo@v1
-      working-directory: ./volta
       with:
         command: build
         args: --release --target aarch64-unknown-linux-gnu
@@ -59,8 +59,8 @@ jobs:
         ./runner/package.sh
     - name: release to github
       if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
-      uses: softprops/action-gh-release@v1
       working-directory: ./volta
+      uses: softprops/action-gh-release@v1
       with:
         files: |
           ./volta-*.tar.gz
