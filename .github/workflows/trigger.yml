@@ -21,6 +21,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install jq
         sudo apt-get install build-essential
+        sudo apt-get install libssl-dev
     - name: add exec permission
       run: |
         chmod -R +x ./runner
