@@ -1,2 +1,6 @@
 # package rust build result
-tar -czf volta-$EXT_RELEASE.tar.gz volta/volta volta/volta/crates/volta-migrate volta/volta/crates/volta-shim
+ls -l /runner/_work/volta
+ls -l /runner/_work/volta/volta
+tar -czf volta-$EXT_RELEASE.tar.gz /runner/_work/volta/volta/volta \
+ /runner/_work/volta/volta/volta-migrate \
+ /runner/_work/volta/volta/volta-shim
