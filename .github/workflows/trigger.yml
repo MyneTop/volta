@@ -43,7 +43,7 @@ jobs:
       # user rust toolchain with arm64
     - name: rust toolchain
       if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
-      run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s
+      run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -y
       # uses: actions-rs/toolchain@v1
       # with:
       #   toolchain: stable
