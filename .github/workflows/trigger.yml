@@ -39,26 +39,26 @@ jobs:
         ./runner/get-source.sh
       # user rust toolchain with arm64
     - name: rust toolchain
-      # working-directory: ./volta
       uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
         target: aarch64-unknown-linux-gnu
         # profile: minimal
         # override: true
+      working-directory: ./volta
     - name: rust build
-      # working-directory: ./volta
       uses: actions-rs/cargo@v1
       with:
         command: build
         args: --release --target aarch64-unknown-linux-gnu
+      working-directory: ./volta
     - name: package
-      # working-directory: ./volta
+      working-directory: ./volta
       run: |
         ../runner/package.sh
     - name: release to github
-      working-directory: ./volta
       uses: softprops/action-gh-release@v1
       with:
         files: |
           ./volta-*.tar.gz
+      working-directory: ./volta
