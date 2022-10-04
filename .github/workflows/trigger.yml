@@ -50,13 +50,12 @@ jobs:
       with:
         command: build
         args: --release --target aarch64-unknown-linux-gnu
-      working-directory: ./volta
+        working-directory: ./volta
     - name: package
       run: |
-        ../runner/package.sh
+        ./runner/package.sh
     - name: release to github
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          ./volta-*.tar.gz
-      working-directory: ./volta
+          ./volta/volta-*.tar.gz
