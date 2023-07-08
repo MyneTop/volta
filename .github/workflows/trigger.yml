@@ -89,16 +89,16 @@ jobs:
         ls .
         date +'- %Y-%m-%d build.' >> ./BUILDLOG.md
         cat ./BUILDLOG.md
-    # - name: Commit files
-    #   run: |
-    #     git config --local user.email "github-actions[bot]@users.noreply.github.com"
-    #     git config --local user.name "github-actions[bot]"
-    #     git add .
-    #     git commit -a -m "Auto add build log."
-    # - name: Push changes
-    #   uses: ad-m/github-push-action@master
-    #   with:
-    #     branch: ${{ github.ref }}
+    - name: Commit files
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add .
+        git commit -a -m "Auto add build log."
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        branch: ${{ github.ref }}
     - name: release to github
       if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
       uses: softprops/action-gh-release@v1
