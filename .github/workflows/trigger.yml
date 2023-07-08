@@ -33,7 +33,7 @@ jobs:
       run: |
         EXT_VERSION=$(curl -u ${{ secrets.CR_USER }}:${{ secrets.CR_PAT }} -sX GET https://api.github.com/repos/MyneTop/volta/releases/latest | jq -r '. | .tag_name' | sed 's|^v||')
         echo "upstream version: $EXT_VERSION"
-        echo "::set-output name=version::$EXT_VERSION"
+        echo "version=$EXT_VERSION" >> $GITHUB_OUTPUT
         # ./runner/check-current.sh
     # - name: check version
     #   if: steps.check-upstream.outputs.version == steps.check-current.outputs.version
@@ -87,6 +87,7 @@ jobs:
     - name: write build log
       run: |
         date +'- %Y-%m-%d build.' >> ./BUILDLOG.md
+        cat ./BUILDLOG.md
     - name: Commit files
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
