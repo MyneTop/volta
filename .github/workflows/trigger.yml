@@ -86,12 +86,12 @@ jobs:
         ./runner/package.sh
     - name: write build log
       run: |
-        date +'- %Y-%m-%d build.' >> BUILDLOG.md
+        date +'- %Y-%m-%d build.' >> ./BUILDLOG.md
     - name: Commit files
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git commit -a -m "Add changes"
+        git commit -a -m "Auto add build log."
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
