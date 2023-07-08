@@ -12,9 +12,6 @@ jobs:
     # runs-on: [self-hosted, ARM64]
     runs-on: ubuntu-latest
     steps:
-    # - uses: pguyot/arm-runner-action@v2
-    #   with:
-    #     base-image: raspios_lite_arm64:latest
     - name: checkout builder
       id: builder
       uses: actions/checkout@v2
@@ -38,9 +35,9 @@ jobs:
         echo "upstream version: $EXT_VERSION"
         echo "::set-output name=version::$EXT_VERSION"
         # ./runner/check-current.sh
-    - name: check version
-      if: steps.check-upstream.outputs.version == steps.check-current.outputs.version
-      # run: exit 0
+    # - name: check version
+    #   if: steps.check-upstream.outputs.version == steps.check-current.outputs.version
+    #   run: exit 0
     - name: get upstream source
       if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
       run: |
