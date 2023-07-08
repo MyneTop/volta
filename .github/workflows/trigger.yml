@@ -12,9 +12,9 @@ jobs:
     # runs-on: [self-hosted, ARM64]
     runs-on: ubuntu-latest
     steps:
-    - uses: pguyot/arm-runner-action@v2
-      with:
-        base-image: raspios_lite_arm64:latest
+    # - uses: pguyot/arm-runner-action@v2
+    #   with:
+    #     base-image: raspios_lite_arm64:latest
     - name: checkout builder
       id: builder
       uses: actions/checkout@v2
@@ -40,33 +40,44 @@ jobs:
         # ./runner/check-current.sh
     - name: check version
       if: steps.check-upstream.outputs.version == steps.check-current.outputs.version
-      run: exit 0
-    - name: install build tools
-      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
-      run: |
-        sudo apt-get install build-essential
-        sudo apt-get install pkg-config libssl-dev
+      # run: exit 0
     - name: get upstream source
       if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
       run: |
         ./runner/get-source.sh
       # user rust toolchain with arm64
-    - name: rust toolchain
+    # - name: install build tools
+    #   if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+    #   run: |
+    #     sudo apt-get install build-essential
+    #     sudo apt-get install pkg-config libssl-dev
+    # - name: rust toolchain
+    #   if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+    #   # run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    #   uses: actions-rs/toolchain@v1
+    #   with:
+    #     toolchain: stable
+    #     target: aarch64-unknown-linux-gnu
+    #     profile: minimal
+    #     override: true
+    # - name: rust build
+    #   if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
+    #   # run: /home/runner/.cargo/bin/cargo build --release --target aarch64-unknown-linux-gnu --manifest-path volta/Cargo.toml
+    #   uses: actions-rs/cargo@v1
+    #   with:
+    #     command: build
+    #     args: --release --target aarch64-unknown-linux-gnu --manifest-path volta/Cargo.toml
+    - name: build with docker
       if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
-      # run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-      uses: actions-rs/toolchain@v1
+      uses: addnab/docker-run-action@v3
       with:
-        toolchain: stable
-        target: aarch64-unknown-linux-gnu
-        profile: minimal
-        override: true
-    - name: rust build
-      if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
-      # run: /home/runner/.cargo/bin/cargo build --release --target aarch64-unknown-linux-gnu --manifest-path volta/Cargo.toml
-      uses: actions-rs/cargo@v1
-      with:
-        command: build
-        args: --release --target aarch64-unknown-linux-gnu --manifest-path volta/Cargo.toml
+        image: arm64v8/rust
+        options: --user 0:0 -v ${{ github.workspace }}:/build -w /build
+        run: |
+          apt-get update
+          apt-get install build-essential
+          apt-get install pkg-config libssl-dev
+          cargo build --release --target aarch64-unknown-linux-gnu --manifest-path volta/Cargo.toml
     - name: package
       if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
       env: 
