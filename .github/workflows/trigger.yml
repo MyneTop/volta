@@ -9,8 +9,12 @@ on:
 
 jobs:
   build:
-    runs-on: [self-hosted, ARM64]
+    # runs-on: [self-hosted, ARM64]
+    runs-on: ubuntu-latest
     steps:
+    - uses: pguyot/arm-runner-action@v2
+      with:
+        base-image: raspios_lite_arm64:latest
     - name: checkout builder
       id: builder
       uses: actions/checkout@v2
@@ -69,6 +73,18 @@ jobs:
         VERSION: ${{ steps.check-upstream.outputs.version }}
       run: |
         ./runner/package.sh
+    - name: write build log
+      run: |
+        date "- %Y-%m-%d build." >> build.log
+    - name: Commit files
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git commit -a -m "Add changes"
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        branch: ${{ github.ref }}
     - name: release to github
       if: steps.check-upstream.outputs.version != steps.check-current.outputs.version
       uses: softprops/action-gh-release@v1
