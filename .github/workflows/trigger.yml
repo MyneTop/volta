@@ -86,7 +86,7 @@ jobs:
         ./runner/package.sh
     - name: write build log
       run: |
-        date "- %Y-%m-%d build." >> build.log
+        date +'- %Y-%m-%d build.' >> BUILDLOG.md
     - name: Commit files
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
