@@ -2,7 +2,7 @@
 
 # Volta Linux Arm64 prebuilt binaries
 
-This repository contains Linux Arm64 prebuilt binaries for [Volta](https://github.com/volta-cli/volta) with self-hosted runner
+This repository contains Linux Arm64 prebuilt binaries for [Volta](https://github.com/volta-cli/volta)
 
 Tracks upstream release weekly to provide the prebuilt binary for aarch-linux-gnu openssl-1.1
 
