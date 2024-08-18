@@ -1,0 +1,261 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<!--
+  Copyright (C) 2017 Christopher R. Field.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!--
+  Please do not remove these pre-processor If-Else blocks. These are used with
+  the `cargo wix` subcommand to automatically determine the installation
+  destination for 32-bit versus 64-bit installers. Removal of these lines will
+  cause installation errors.
+-->
+<?if $(sys.BUILDARCH) = x64 or $(sys.BUILDARCH) = arm64 ?>
+    <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+<?else ?>
+  <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+<?endif ?>
+
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+
+    <Product
+        Id='*'
+        Name='Volta'
+        UpgradeCode='42A39E14-335A-4464-AA37-17FDA38FA377'
+        Manufacturer='The Volta Maintainers'
+        Language='1033'
+        Codepage='1252'
+        Version='$(var.Version)'>
+
+        <Package Id='*'
+            Keywords='Installer'
+            Description='The JavaScript Launcher'
+            Manufacturer='The Volta Maintainers'
+            InstallerVersion='500'
+            Languages='1033'
+            Compressed='yes'
+            InstallScope='perMachine'
+            SummaryCodepage='1252'/>
+
+        <MajorUpgrade
+            Schedule='afterInstallInitialize'
+            DowngradeErrorMessage='A newer version of [ProductName] is already installed. Setup will now exit.'/>
+
+        <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' CompressionLevel='high'/>
+
+        <Directory Id='TARGETDIR' Name='SourceDir'>
+            <Directory Id='$(var.PlatformProgramFilesFolder)' Name='PFiles'>
+                <Directory Id='INSTALLDIR' Name='Volta'>
+                </Directory>
+            </Directory>
+            <?if $(sys.BUILDARCH) = x64 ?>
+            <Merge Id='VCRedist' SourceFile='wix\Microsoft_VC140_CRT_x64.msm' DiskId='1' Language='0'/>
+            <?endif ?>
+        </Directory>
+
+        <ComponentGroup Id='Binaries' Directory='INSTALLDIR'>
+            <Component Id='voltaBinary' Guid='*'>
+                <File
+                    Id='voltaEXE'
+                    Name='volta.exe'
+                    DiskId='1'
+                    Source='$(var.CargoTargetBinDir)\volta.exe'
+                    KeyPath='yes'/>
+                <Environment
+                    Id='INSTALLPATH'
+                    Name='PATH'
+                    Value='[INSTALLDIR]'
+                    Permanent='no'
+                    Part='first'
+                    Action='set'
+                    System='yes' />
+            </Component>
+            <Component Id='shimBinary' Guid='*'>
+                <File
+                    Id='voltashimEXE'
+                    Name='volta-shim.exe'
+                    DiskId='1'
+                    Source='$(var.CargoTargetBinDir)\volta-shim.exe'
+                    KeyPath='yes'/>
+            </Component>
+            <Component Id='migrateBinary' Guid='*'>
+                <File
+                    Id='voltamigrateEXE'
+                    Name='volta-migrate.exe'
+                    DiskId='1'
+                    Source='$(var.CargoTargetBinDir)\volta-migrate.exe'
+                    KeyPath='yes'/>
+            </Component>
+            <Component Id='nodeBinary' Guid='*'>
+                <File
+                    Id='nodeEXE'
+                    Name='node.exe'
+                    DiskId='1'
+                    Source='$(var.CargoTargetBinDir)\volta-shim.exe'
+                    KeyPath='yes'/>
+            </Component>
+            <Component Id='npmBinary' Guid='*'>
+                <File
+                    Id='npmEXE'
+                    Name='npm.exe'
+                    DiskId='1'
+                    Source='$(var.CargoTargetBinDir)\volta-shim.exe'
+                    KeyPath='yes'/>
+            </Component>
+            <Component Id='npmScript' Guid='*'>
+                <File
+                    Id='npmCMD'
+                    Name='npm.cmd'
+                    DiskId='1'
+                    Source='wix\shim.cmd'
+                    KeyPath='yes'/>
+            </Component>
+            <Component Id='npxBinary' Guid='*'>
+                <File
+                    Id='npxEXE'
+                    Name='npx.exe'
+                    DiskId='1'
+                    Source='$(var.CargoTargetBinDir)\volta-shim.exe'
+                    KeyPath='yes'/>
+            </Component>
+            <Component Id='npxScript' Guid='*'>
+                <File
+                    Id='npxCMD'
+                    Name='npx.cmd'
+                    DiskId='1'
+                    Source='wix\shim.cmd'
+                    KeyPath='yes'/>
+            </Component>
+            <Component Id='pnpmBinary' Guid='*'>
+                <File
+                    Id='pnpmEXE'
+                    Name='pnpm.exe'
+                    DiskId='1'
+                    Source='$(var.CargoTargetBinDir)\volta-shim.exe'
+                    KeyPath='yes'/>
+            </Component>
+            <Component Id='pnpmScript' Guid='*'>
+                <File
+                    Id='pnpmCMD'
+                    Name='pnpm.cmd'
+                    DiskId='1'
+                    Source='wix\shim.cmd'
+                    KeyPath='yes'/>
+            </Component>
+            <Component Id='yarnBinary' Guid='*'>
+                <File
+                    Id='yarnEXE'
+                    Name='yarn.exe'
+                    DiskId='1'
+                    Source='$(var.CargoTargetBinDir)\volta-shim.exe'
+                    KeyPath='yes'/>
+            </Component>
+            <Component Id='yarnScript' Guid='*'>
+                <File
+                    Id='yarnCMD'
+                    Name='yarn.cmd'
+                    DiskId='1'
+                    Source='wix\shim.cmd'
+                    KeyPath='yes'/>
+            </Component>
+            <Component Id='yarnPkgBinary' Guid='*'>
+                <File
+                    Id='yarnpgkEXE'
+                    Name='yarnpkg.exe'
+                    DiskId='1'
+                    Source='$(var.CargoTargetBinDir)\volta-shim.exe'
+                    KeyPath='yes'/>
+            </Component>
+            <Component Id='yarnPkgScript' Guid='*'>
+                <File
+                    Id='yarnpkgCMD'
+                    Name='yarnpkg.cmd'
+                    DiskId='1'
+                    Source='wix\shim.cmd'
+                    KeyPath='yes'/>
+            </Component>
+        </ComponentGroup>
+
+        <Feature Id='MainProgram'>
+            <ComponentGroupRef Id='Binaries'/>
+        </Feature>
+
+        <?if $(sys.BUILDARCH) = x64 ?>
+        <Feature Id='VCRedistributable' Title='Visual C++ Runtime' AllowAdvertise='no' Display='hidden' Level='1'>
+            <MergeRef Id='VCRedist'/>
+        </Feature>
+        <?endif ?>
+
+        <SetProperty Id='ARPINSTALLLOCATION' Value='[APPLICATIONFOLDER]' After='CostFinalize'/>
+
+        <CustomAction
+            Id="VoltaSetup"
+            FileKey="voltaEXE"
+            ExeCommand="setup"
+            Execute="deferred"
+            Return="ignore" />
+
+        <InstallExecuteSequence>
+            <Custom Action="VoltaSetup" Before="InstallFinalize" />
+        </InstallExecuteSequence>
+
+        <!--
+          Uncomment the following `Icon` and `Property` tags to change the product icon.
+
+          The product icon is the graphic that appears in the Add/Remove
+          Programs control panel for the application.
+        -->
+        <Icon Id='ProductICO' SourceFile='wix\volta.ico'/>
+        <Property Id='ARPPRODUCTICON' Value='ProductICO' />
+
+        <Property Id='ARPHELPLINK' Value='https://github.com/volta-cli/volta'/>
+        <Property Id='LicenseAccepted' Value='1'/>
+
+        <UI>
+            <UIRef Id='WixUI_FeatureTree' />
+
+            <Publish Dialog='LicenseAgreementDlg' Control='Next' Event='NewDialog' Value='VerifyReadyDlg' Order='2'>1</Publish>
+            <Publish Dialog='VerifyReadyDlg' Control='Back' Event='NewDialog' Value='LicenseAgreementDlg' Order='2'>1</Publish>
+        </UI>
+
+        <!--
+          Enabling the EULA dialog in the installer requires uncommenting
+          the following `WixUILicenseRTF` tag and changing the `Value`
+          attribute.
+        -->
+        <WixVariable Id='WixUILicenseRtf' Value='wix\License.rtf'/>
+
+        <!--
+          Uncomment the next `WixVaraible` tag to customize the installer's
+          Graphical User Interface (GUI) and add a custom banner image across
+          the top of each screen. See the WiX Toolset documentation for details
+          about customization.
+
+          The banner BMP dimensions are 493 x 58 pixels.
+        -->
+        <!--<WixVariable Id='WixUIBannerBmp' Value='wix\Banner.bmp'/>-->
+
+        
+        <!--
+          Uncomment the next `WixVariable` tag to customize the installer's
+          Graphical User Interface (GUI) and add a custom image to the first
+          dialog, or screen. See the WiX Toolset documentation for details about
+          customization.
+
+          The dialog BMP dimensions are 493 x 312 pixels.
+        -->
+        <!--<WixVariable Id='WixUIDialogBmp' Value='wix\Dialog.bmp'/>-->
+
+    </Product>
+</Wix>
