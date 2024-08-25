@@ -1,0 +1,45 @@
+/target/
+**/*.rs.bk
+Notion.msi
+Volta.msi
+dev/windows/*.log
+dev/windows/Notion.wixobj
+dev/windows/Volta.wixobj
+dev/windows/Notion.wixpdb
+dev/windows/Volta.wixpdb
+dev/unix/install.sh
+/.idea/
+/rls/
+/rls*
+
+
+# Created by https://www.gitignore.io/api/intellij (and then modified heavily)
+
+### Intellij ###
+# Ignore all IDEA files. This means you may have to rebuild the project on your
+# new machines at times, but avoids checking in a bunch of files which are not
+# generally relevant to other developers.
+.idea
+
+# CMake
+cmake-build-*/
+
+# File-based project format
+*.iws
+
+# IntelliJ
+out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# End of https://www.gitignore.io/api/intellij

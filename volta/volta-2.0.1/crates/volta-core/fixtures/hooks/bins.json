@@ -1,0 +1,40 @@
+{
+  "node": {
+    "distro": {
+      "bin": "/some/bin/for/node/distro"
+    },
+    "latest": {
+      "bin": "/some/bin/for/node/latest"
+    },
+    "index": {
+      "bin": "/some/bin/for/node/index"
+    }
+  },
+  "pnpm": {
+    "distro": {
+      "bin": "/bin/to/pnpm/distro"
+    },
+    "latest": {
+      "bin": "/bin/to/pnpm/latest"
+    },
+    "index": {
+      "bin": "/bin/to/pnpm/index"
+    }
+  },
+  "yarn": {
+    "distro": {
+      "bin": "/bin/to/yarn/distro"
+    },
+    "latest": {
+      "bin": "/bin/to/yarn/latest"
+    },
+    "index": {
+      "bin": "/bin/to/yarn/index"
+    }
+  },
+  "events": {
+    "publish": {
+      "bin": "/events/bin"
+    }
+  }
+}
