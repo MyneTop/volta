@@ -1,0 +1,26 @@
+{
+  "node": {
+    "index": {
+      "prefix": "http://localhost/node/index/",
+      "format": "github"
+    }
+  },
+  "npm": {
+    "index": {
+      "prefix": "http://localhost/npm/index/",
+      "format": "github"
+    }
+  },
+  "pnpm": {
+    "index": {
+      "prefix": "http://localhost/pnpm/index/",
+      "format": "github"
+    }
+  },
+  "yarn": {
+    "index": {
+      "prefix": "http://localhost/yarn/index/",
+      "format": "github"
+    }
+  }
+}
